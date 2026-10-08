@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Учебный ИИ-ассистент кафедры ИУ-5 МГТУ им. Н.Э. Баумана" />
+  <title>ИУ-5 · AI Ассистент</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section class="auth-screen" id="authScreen">
+    <header class="site-header auth-header">
+      <a class="department-brand" href="https://home.science.iu5.bmstu.ru/" target="_blank" rel="noreferrer">
+        <div class="brand-mark">ИУ-5</div>
+        <div class="department-copy">
+          <span>МГТУ ИМ. Н.Э. БАУМАНА</span>
+          <strong>Системы обработки информации и управления</strong>
+        </div>
+      </a>
+      <div class="header-pill active-pill">AI Ассистент</div>
+    </header>
+
+    <div class="auth-content">
+      <div class="auth-intro">
+        <span class="section-kicker">УЧЕБНЫЙ ИИ-АССИСТЕНТ</span>
+        <h1>Задавайте вопросы<br>по материалам кафедры.</h1>
+        <p>Ассистент использует загруженные методические материалы и базу знаний проекта.</p>
+      </div>
+
+      <form class="login-card" id="loginForm">
+        <span class="section-kicker">АВТОРИЗАЦИЯ</span>
+        <h2>Вход в систему</h2>
+        <p class="login-description">Введите данные учебной учетной записи.</p>
+
+        <label class="field">
+          <span>Логин</span>
+          <input id="loginInput" autocomplete="username" placeholder="Введите логин" required />
+        </label>
+
+        <label class="field">
+          <span>Пароль</span>
+          <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Введите пароль" required />
+        </label>
+
+        <div class="login-error" id="loginError" aria-live="polite"></div>
+        <button class="primary-button" type="submit">Войти</button>
+        <p class="demo-note">Демо: <b>admin</b> / <b>admin</b></p>
+      </form>
+    </div>
+  </section>
+
+  <main class="app hidden" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand-wrap">
+        <a class="department-brand department-brand--sidebar" href="https://home.science.iu5.bmstu.ru/" target="_blank" rel="noreferrer">
+          <div class="brand-mark brand-mark--small">ИУ-5</div>
+          <div class="department-copy">
+            <span>МГТУ ИМ. Н.Э. БАУМАНА</span>
+            <strong>AI Ассистент</strong>
+          </div>
+        </a>
+      </div>
+
+      <button class="new-chat-button" id="newChatButton">
+        <span class="plus">+</span>
+        Новый диалог
+      </button>
+
+      <div class="history-label">ИСТОРИЯ ЗАПРОСОВ</div>
+      <div class="chat-history" id="chatHistory"></div>
+
+      <div class="sidebar-bottom">
+        <a class="department-link" href="https://home.science.iu5.bmstu.ru/" target="_blank" rel="noreferrer">
+          <span>Сайт кафедры</span>
+          <span>↗</span>
+        </a>
+        <button class="user-card" id="logoutButton">
+          <span class="user-avatar">A</span>
+          <span class="user-meta">
+            <strong>admin</strong>
+            <small>Выйти</small>
+          </span>
+          <span class="logout-icon">↪</span>
+        </button>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="site-header app-header">
+        <div class="header-left">
+          <button class="mobile-menu" id="mobileMenuButton" aria-label="Открыть меню">☰</button>
+          <div>
+            <div class="topbar-title" id="topbarTitle">Новый диалог</div>
+            <div class="topbar-subtitle"><span class="status-dot"></span> База знаний подключена</div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a class="header-pill" href="https://home.science.iu5.bmstu.ru/" target="_blank" rel="noreferrer">Кафедра</a>
+          <div class="header-pill active-pill">AI Ассистент</div>
+        </div>
+      </header>
+
+      <div class="chat-area" id="chatArea">
+        <section class="welcome" id="welcomeScreen">
+          <span class="section-kicker">ИИ-АССИСТЕНТ ИУ-5</span>
+          <h2>Чем я могу помочь?</h2>
+          <p>Задайте вопрос по методическим материалам, лабораторным работам или дисциплинам кафедры.</p>
+
+          <div class="suggestions">
+            <button class="suggestion" data-prompt="Объясни тему из методички простыми словами">
+              <span>
+                <b>Объяснить тему</b>
+                <small>Разобрать материал простыми словами</small>
+              </span>
+              <span class="suggestion-arrow">+</span>
+            </button>
+            <button class="suggestion" data-prompt="Помоги подготовиться к защите лабораторной работы">
+              <span>
+                <b>Подготовка к защите</b>
+                <small>Вопросы, определения и краткий разбор</small>
+              </span>
+              <span class="suggestion-arrow">+</span>
+            </button>
+            <button class="suggestion" data-prompt="Найди информацию в методических материалах по моей теме">
+              <span>
+                <b>Найти в материалах</b>
+                <small>Поиск по загруженной базе знаний</small>
+              </span>
+              <span class="suggestion-arrow">+</span>
+            </button>
+          </div>
+        </section>
+
+        <div class="messages" id="messages"></div>
+      </div>
+
+      <footer class="composer-wrap">
+        <form class="composer" id="messageForm">
+          <textarea id="messageInput" rows="1" placeholder="Задайте вопрос по учебным материалам..." aria-label="Сообщение"></textarea>
+          <button class="send-button" id="sendButton" type="submit" aria-label="Отправить">➜</button>
+        </form>
+        <div class="composer-note">ИИ может допускать ошибки. Проверяйте важную информацию по материалам кафедры.</div>
+      </footer>
+    </section>
+  </main>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <script src="script.js"></script>
+</body>
+</html>
