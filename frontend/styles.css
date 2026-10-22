@@ -292,9 +292,10 @@ a { color: inherit; }
 .user-meta small { color: #747783; font-size: 10px; }
 .logout-icon { color: #777a87; }
 
-.workspace { min-width: 0; height: 100vh; display: grid; grid-template-rows: 88px minmax(0, 1fr) auto; background: var(--bg); }
+.workspace { min-width: 0; height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 88px minmax(0, 1fr) auto; background: var(--bg); }
 .app-header { height: 88px; padding: 0 34px; }
 .header-left { display: flex; align-items: center; min-width: 0; }
+.header-left > div { min-width: 0; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .app-header .header-pill { min-height: 42px; padding: 0 19px; font-size: 12px; }
 .topbar-title { font-size: 17px; font-weight: 800; letter-spacing: -.02em; max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -406,7 +407,7 @@ a { color: inherit; }
   .auth-intro h1 { font-size: 43px; }
   .login-card { justify-self: stretch; max-width: none; padding: 30px; }
 
-  .app { grid-template-columns: 1fr; }
+  .app { grid-template-columns: minmax(0, 1fr); }
   .sidebar { position: fixed; z-index: 40; left: -320px; width: 310px; transition: left .22s ease; }
   .sidebar.open { left: 0; }
   .sidebar-overlay { position: fixed; inset: 0; z-index: 30; background: rgba(2,4,12,.68); backdrop-filter: blur(3px); }

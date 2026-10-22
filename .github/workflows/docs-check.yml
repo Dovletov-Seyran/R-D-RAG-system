@@ -1,0 +1,25 @@
+name: docs-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Проверка документации
+        run: python3 scripts/check_docs.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Синтаксис JavaScript
+        run: node --check frontend/script.js

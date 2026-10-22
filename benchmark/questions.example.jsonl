@@ -1,0 +1,2 @@
+{"id": "ex-01", "split": "example", "query": "Какие разделы должны быть в отчёте по лабораторной работе?", "answerable": true, "gold_doc_ids": ["lab3-guide"], "gold_pages": [4], "reference_answer": "Пример формата: эталон заполняется по реальной методичке."}
+{"id": "ex-02", "split": "example", "query": "Какая погода завтра в Москве?", "answerable": false, "gold_doc_ids": [], "gold_pages": [], "reference_answer": "В материалах кафедры ответа нет."}
