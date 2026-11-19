@@ -25,6 +25,7 @@ REQUIRED = [
     "spec/plan.md",
     "spec/decisions.md",
     "docs/checkpoint-1.md",
+    "docs/checkpoint-2.md",
     "docs/demo-script.md",
     "docs/repository-structure.md",
     "docs/sources.md",
