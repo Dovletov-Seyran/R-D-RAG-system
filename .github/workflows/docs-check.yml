@@ -23,3 +23,9 @@ jobs:
           node-version: "20"
       - name: Синтаксис JavaScript
         run: node --check frontend/script.js
+      - name: Зависимости Python
+        run: pip install -r backend/requirements.txt
+      - name: Сборка индекса
+        run: python -m search.build
+      - name: Тесты поиска, benchmark и API (без LLM)
+        run: python -m pytest -q

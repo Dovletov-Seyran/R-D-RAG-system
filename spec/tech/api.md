@@ -1,6 +1,6 @@
 # API чата
 
-Проект контракта между frontend и backend. Реализации пока нет; frontend уже содержит точку подключения в `askAssistant()` файла `frontend/script.js`.
+Контракт между frontend и backend. Реализация — `backend/app/main.py`, тесты — `tests/test_api.py`. Интерактивная документация запущенного сервиса — http://localhost:8000/docs.
 
 ## `POST /api/chat`
 
@@ -21,7 +21,7 @@
 | Поле | Тип | Обязательно | Описание |
 | --- | --- | --- | --- |
 | `message` | string | да | Вопрос, 1–2000 символов |
-| `history` | array | нет | Предыдущие сообщения диалога; backend использует последние 6 |
+| `history` | array | нет | Предыдущие сообщения диалога `{role, text}` (лишние поля вроде `createdAt` игнорируются); в LLM передаются последние 6, прошлый вопрос пользователя помогает искать по уточнению |
 
 **Ответ 200**
 
@@ -39,14 +39,14 @@
 | `sources` | string[] | Использованные источники в формате «Документ, стр. N» |
 | `finish_reason` | string | `ok` — ответ по материалам; `no_context` — в материалах нет ответа |
 
-Поля `text` и `sources` frontend уже умеет показывать. `finish_reason` добавляется для benchmark и будущей подсветки отказа.
+При `no_context` поле `text` равно «В документах нет этой информации.», `sources` пустой. Отказ возникает в двух случаях: поиск не нашёл фрагмента с достаточным покрытием вопроса (LLM не вызывается) или LLM ответила, что во фрагментах ответа нет.
 
 **Ошибки**
 
 | Код | Когда | Тело |
 | --- | --- | --- |
 | 400 | Пустой или слишком длинный `message` | `{ "error": "message_invalid" }` |
-| 503 | Недоступна LLM или индекс | `{ "error": "service_unavailable" }` |
+| 503 | Ollama недоступна или не ответила за `OLLAMA_TIMEOUT`; индекс не собран | `{ "error": "service_unavailable", "detail": "…" }` |
 | 500 | Внутренняя ошибка | `{ "error": "internal" }` |
 
 При любой ошибке frontend показывает «Не удалось получить ответ. Проверьте подключение к серверу.».
@@ -56,8 +56,10 @@
 Проверка готовности для показа и CI.
 
 ```json
-{ "status": "ok", "index_loaded": true, "documents": 12, "llm": "available" }
+{ "status": "ok", "index_loaded": true, "documents": 30, "chunks": 1832, "llm": "available", "model": "qwen3:4b-instruct" }
 ```
+
+`status` — `ok`, если индекс загружен и модель доступна, иначе `degraded`. `llm` — `available`, `model_missing` (Ollama запущена, модель не скачана) или `unavailable`.
 
 ## `POST /api/benchmark/run`
 
@@ -74,11 +76,17 @@
 | `k` | int | Глубина поиска для метрик, по умолчанию 5 |
 | `mode` | string | `retrieval` — только поиск (Recall, MRR); `full` — поиск и ответ LLM (все 4 метрики) |
 
-**Ответ 202:** `{ "run_id": "2026-11-25T14-03-12", "status": "running" }`. Если прогон уже идёт — 409 `{ "error": "benchmark_running" }`.
+**Ответ 202:** `{ "run_id": "2026-11-25T14-03-12", "status": "running" }`.
+
+| Код | Когда |
+| --- | --- |
+| 400 | `mode` не `retrieval`/`full` или `k` вне 1–20 — `{ "error": "request_invalid" }` |
+| 409 | Прогон уже идёт — `{ "error": "benchmark_running" }` |
+| 503 | Индекс не собран; для `full` — Ollama или модель недоступны |
 
 ## `GET /api/benchmark/runs/{run_id}`
 
-Статус и результат прогона: `status` (`running` / `done` / `error`), `progress` (`done`, `total`), а после завершения — `params`, `metrics`, `questions`. Полный формат — контракт C3 в [ТЗ точки 2](../../docs/checkpoint-2.md#c3-запуск-benchmark-из-кода). Неизвестный `run_id` — 404.
+Статус и результат прогона: `status` (`running` / `done` / `error`), `progress` (`done`, `total`), а после завершения — `params`, `metrics`, `questions`, `saved_to` (файлы отчёта в `benchmark/results/`). При `error` — поле `error` с причиной. Прогоны хранятся в памяти процесса до перезапуска backend. Полный формат — контракт C3 в [ТЗ точки 2](../../docs/checkpoint-2.md#c3-запуск-benchmark-из-кода). Неизвестный `run_id` — 404.
 
 ## Расширения следующих этапов
 

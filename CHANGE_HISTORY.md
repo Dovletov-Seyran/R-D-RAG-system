@@ -2,6 +2,15 @@
 
 Краткий журнал значимых изменений. Полная история — в Git-коммитах и Pull Request репозитория.
 
+## 2026-11-19 — backend и LLM (точка 2)
+
+- Backend на FastAPI: `POST /api/chat`, `GET /api/health`, запуск benchmark через API `POST /api/benchmark/run` и `GET /api/benchmark/runs/{run_id}`.
+- Функция `answer()`: BM25 → отказ без контекста без вызова LLM → prompt с фрагментами и историей → Ollama → отказ по ответу модели; источники из metadata фрагментов.
+- Модель `qwen3:4b-instruct` (решение D14), уточняющие вопросы (D15), источники по ссылкам модели (D16), формулы без LaTeX (D17).
+- 23 теста API с заглушкой LLM; README: запуск системы и повтор проверки.
+- Полный benchmark через API: Recall@5 = 0.96, MRR@5 = 1.0, Accuracy = 1.0, Correct Rejection Rate = 1.0.
+- Сверка корпуса с исходными материалами семестра: хеши и извлечённый текст всех 30 документов совпадают.
+
 ## 2026-11-19 — RAG: корпус, свой BM25, benchmark
 
 - Корпус: 30 документов `D01…D30` 1 семестра, `corpus/manifest.json`, извлечённый текст `corpus/processed/`, скрипт `python -m corpus.extract` с очисткой водяных знаков и персональных данных.
