@@ -1,0 +1,54 @@
+{
+  "run_id": "demo-only",
+  "status": "done",
+  "progress": {
+    "done": 2,
+    "total": 2
+  },
+  "params": {
+    "k": 5,
+    "mode": "full",
+    "model": "demo",
+    "corpus_version": "demo",
+    "commit": "demo"
+  },
+  "metrics": {
+    "recall_at_k": 1,
+    "mrr_at_k": 1,
+    "accuracy": 1,
+    "correct_rejection_rate": 1
+  },
+  "questions": [
+    {
+      "id": "Q01",
+      "type": "normal",
+      "query": "Как найти предел функции?",
+      "relevant_doc_ids": [
+        "D03",
+        "D07",
+        "D12"
+      ],
+      "retrieved_doc_ids": [
+        "D07",
+        "D03",
+        "D21",
+        "D12",
+        "D05"
+      ],
+      "answer": "Демонстрационный ответ для проверки интерфейса.",
+      "finish_reason": "ok",
+      "correct": true
+    },
+    {
+      "id": "T01",
+      "type": "trap",
+      "query": "Во сколько консультация?",
+      "relevant_doc_ids": [],
+      "retrieved_doc_ids": [],
+      "answer": "В документах нет этой информации.",
+      "finish_reason": "no_context",
+      "correct": true
+    }
+  ],
+  "duration_s": 0
+}

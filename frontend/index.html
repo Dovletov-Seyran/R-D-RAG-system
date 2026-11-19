@@ -69,6 +69,7 @@
         Новый диалог
       </button>
 
+      <button class="new-chat-button" id="benchmarkButton">◷ Benchmark</button>
       <div class="history-label">ИСТОРИЯ ЗАПРОСОВ</div>
       <div class="chat-history" id="chatHistory"></div>
 
@@ -94,7 +95,7 @@
           <button class="mobile-menu" id="mobileMenuButton" aria-label="Открыть меню">☰</button>
           <div>
             <div class="topbar-title" id="topbarTitle">Новый диалог</div>
-            <div class="topbar-subtitle"><span class="status-dot"></span> База знаний подключена</div>
+            <div class="topbar-subtitle"><span class="status-dot"></span> Ответы через API · демо-вход</div>
           </div>
         </div>
         <div class="header-actions">
@@ -137,9 +138,23 @@
         <div class="messages" id="messages"></div>
       </div>
 
+      <section id="benchmarkScreen" class="benchmark-screen hidden" aria-labelledby="benchmarkTitle">
+        <span class="section-kicker">ПРОВЕРКА КАЧЕСТВА</span>
+        <h2 id="benchmarkTitle">Benchmark</h2>
+        <p>Проверка поиска и ответов по набору вопросов проекта.</p>
+        <form id="benchmarkForm" class="benchmark-controls">
+          <label>Режим <select id="benchmarkMode"><option value="retrieval">Только поиск</option><option value="full">Поиск + LLM</option></select></label>
+          <label>Глубина k <input id="benchmarkK" type="number" min="1" step="1" value="5" required></label>
+          <button class="primary-button" id="benchmarkRun" type="submit">Запустить</button>
+          <button class="header-pill" id="benchmarkExample" type="button">Показать пример</button>
+        </form>
+        <p id="benchmarkStatus" role="status" aria-live="polite">Выберите режим и запустите проверку.</p>
+        <div id="benchmarkMetrics" class="benchmark-metrics"></div>
+        <div class="benchmark-table-wrap"><table id="benchmarkTable"><thead><tr><th>ID</th><th>Тип</th><th>Вопрос</th><th>Релевантные</th><th>Найденные</th><th>Ответ модели</th><th>Итог</th></tr></thead><tbody id="benchmarkRows"></tbody></table></div>
+      </section>
       <footer class="composer-wrap">
         <form class="composer" id="messageForm">
-          <textarea id="messageInput" rows="1" placeholder="Задайте вопрос по учебным материалам..." aria-label="Сообщение"></textarea>
+          <textarea maxlength="2000" id="messageInput" rows="1" placeholder="Задайте вопрос по учебным материалам..." aria-label="Сообщение"></textarea>
           <button class="send-button" id="sendButton" type="submit" aria-label="Отправить">➜</button>
         </form>
         <div class="composer-note">ИИ может допускать ошибки. Проверяйте важную информацию по материалам кафедры.</div>
