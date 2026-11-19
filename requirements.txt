@@ -1,0 +1,6 @@
+# RAG: извлечение текста, поиск, benchmark (Python 3.12+)
+pypdf==7.1.1
+python-docx==1.2.0
+pymorphy3==2.0.6
+pymorphy3-dicts-ru==2.4.417150.4580142
+pytest==9.2.0
