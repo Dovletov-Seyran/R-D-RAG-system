@@ -59,6 +59,27 @@
 { "status": "ok", "index_loaded": true, "documents": 12, "llm": "available" }
 ```
 
+## `POST /api/benchmark/run`
+
+Запуск benchmark в рантайме (требование точки 2). Прогон идёт в фоне, ответ возвращается сразу.
+
+**Запрос**
+
+```json
+{ "k": 5, "mode": "full" }
+```
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `k` | int | Глубина поиска для метрик, по умолчанию 5 |
+| `mode` | string | `retrieval` — только поиск (Recall, MRR); `full` — поиск и ответ LLM (все 4 метрики) |
+
+**Ответ 202:** `{ "run_id": "2026-11-25T14-03-12", "status": "running" }`. Если прогон уже идёт — 409 `{ "error": "benchmark_running" }`.
+
+## `GET /api/benchmark/runs/{run_id}`
+
+Статус и результат прогона: `status` (`running` / `done` / `error`), `progress` (`done`, `total`), а после завершения — `params`, `metrics`, `questions`. Полный формат — контракт C3 в [ТЗ точки 2](../../docs/checkpoint-2.md#c3-запуск-benchmark-из-кода). Неизвестный `run_id` — 404.
+
 ## Расширения следующих этапов
 
 - `GET /api/sources/{chunk_id}` — текст найденного фрагмента для просмотра источника.
