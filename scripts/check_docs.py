@@ -33,6 +33,9 @@ REQUIRED = [
     "benchmark/README.md",
     "benchmark/questions.example.jsonl",
     "corpus/README.md",
+    "backend/README.md",
+    "backend/app/main.py",
+    "backend/app/rag.py",
 ]
 
 LINK = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)\)")

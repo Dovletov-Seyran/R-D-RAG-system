@@ -1,0 +1,5 @@
+# Backend: FastAPI и клиент Ollama; поиск и benchmark — из общего requirements.txt
+-r ../requirements.txt
+fastapi==0.165.0
+uvicorn==0.54.0
+httpx==0.28.1

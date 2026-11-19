@@ -13,11 +13,11 @@
 | CP2-01. Корпус `D01…D30` (1 курс, 1 семестр) | RAG | `corpus/`, manifest | Текст извлечён, страницы совпадают | Готово |
 | CP2-02. Свой BM25-индекс и токенизатор | RAG | `search/` | `pytest`, нужный документ в top-5 | Готово |
 | CP2-03. Набор вопросов: 10 обычных + 5 ловушек | RAG + все | `benchmark/questions.jsonl` | ≥ 3 релевантных документа на вопрос | Готово |
-| CP2-04. Скрипт benchmark: 4 метрики, запуск в рантайме | RAG | `benchmark/run.py` | `python -m benchmark.run` | Готово (Accuracy — после CP2-05) |
-| CP2-05. Backend `POST /api/chat`, Ollama, отказ | Backend | `backend/` | Тесты API с заглушкой LLM | В работе |
-| CP2-06. Запуск benchmark через API | Backend | `POST /api/benchmark/run` | Тест API, прогон на ноутбуке | После CP2-04 |
-| CP2-07. Подключение frontend к API, источники, отказ | Frontend | `askAssistant()` | Сценарии в браузере | После CP2-05 |
-| CP2-08. Страница benchmark в интерфейсе | Frontend | `frontend/` | Запуск кнопкой, метрики и таблица | После CP2-06 |
+| CP2-04. Скрипт benchmark: 4 метрики, запуск в рантайме | RAG | `benchmark/run.py` | `python -m benchmark.run` | Готово |
+| CP2-05. Backend `POST /api/chat`, Ollama, отказ | Backend | `backend/` | Тесты API с заглушкой LLM | Готово |
+| CP2-06. Запуск benchmark через API | Backend | `POST /api/benchmark/run` | Тест API, прогон на ноутбуке | Готово |
+| CP2-07. Подключение frontend к API, источники, отказ | Frontend | `askAssistant()` | Сценарии в браузере | В работе: API готов |
+| CP2-08. Страница benchmark в интерфейсе | Frontend | `frontend/` | Запуск кнопкой, метрики и таблица | В работе: API готов |
 | CP2-09. README и защита точки 2 | Все | README, [ТЗ точки 2](../docs/checkpoint-2.md) | Генеральная репетиция | Финал этапа |
 | CP3-01. Расширение корпуса до 15–30 документов | RAG | `corpus/` | manifest, проверка извлечения | Финальный этап |
 | CP3-02. Benchmark и эксперименты E1–E4 | RAG + все | Отчёт с метриками | holdout | Финальный этап |

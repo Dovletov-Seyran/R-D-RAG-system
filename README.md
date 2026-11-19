@@ -21,8 +21,8 @@
 | Контракт API чата | Описан в [spec/tech/api.md](spec/tech/api.md); точка подключения в `frontend/script.js` |
 | Корпус | 30 документов `D01…D30` (1 курс, 1 семестр), извлечённый текст — [corpus/](corpus/) |
 | BM25-поиск | Собственный индекс, лемматизация, отказ без контекста — [search/](search/), 24 теста |
-| Benchmark | 10 вопросов + 5 ловушек, запуск в рантайме: Recall@5 = 0.960, MRR@5 = 1.000 — [benchmark/](benchmark/) |
-| Backend, LLM | В работе по [ТЗ точки 2](docs/checkpoint-2.md) |
+| Benchmark | 10 вопросов + 5 ловушек, запуск в рантайме из консоли и через API: Recall@5 = 0.960, MRR@5 = 1.000, Accuracy = 1.000, Correct Rejection Rate = 1.000 — [benchmark/](benchmark/) |
+| Backend, LLM | FastAPI + Ollama (`qwen3:4b-instruct`): чат с источниками, отказ без контекста, запуск benchmark через API — [backend/](backend/), 23 теста |
 
 Ответы в прототипе — демонстрационные: они явно помечены как «демо-ответ» и не являются работой RAG.
 
@@ -42,20 +42,59 @@ python3 -m http.server 8080 --directory frontend
 | --- | --- |
 | ![Вход](docs/images/login.png) | ![Новый диалог](docs/images/welcome.png) |
 
-## Поиск и benchmark
+## Запуск системы
 
-Нужен Python 3.12+.
+Нужны Python 3.12+ и [Ollama](https://ollama.com/). Все команды — из корня репозитория.
+
+**1. Зависимости и индекс** (один раз):
 
 ```bash
-python -m venv .venv
-.venv/Scripts/activate            # Windows; на Linux/macOS: source .venv/bin/activate
-pip install -r requirements.txt
-python -m search.build            # собрать BM25-индекс из corpus/processed (~2 с)
-python -m benchmark.run           # benchmark в рантайме: Recall@5, MRR@5, отказ на ловушках
-python -m pytest                  # тесты поиска и benchmark
+python3.12 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt
+python -m search.build             # BM25-индекс из corpus/processed (~1 с)
 ```
 
-С ответами LLM, когда запущен backend: `python -m benchmark.run --mode full --api http://localhost:8000` — добавляются Accuracy и Correct Rejection Rate по ответам. Результаты сохраняются в `benchmark/results/`. Подробности — [benchmark/README.md](benchmark/README.md), [search/README.md](search/README.md), [corpus/README.md](corpus/README.md).
+**2. Модель** (один раз, ~2.5 ГБ):
+
+```bash
+ollama pull qwen3:4b-instruct
+```
+
+**3. Запуск** — в трёх окнах терминала:
+
+```bash
+ollama serve                                   # если Ollama не запущена как приложение
+uvicorn backend.app.main:app --port 8000       # backend
+python3 -m http.server 8080 --directory frontend   # интерфейс: http://localhost:8080
+```
+
+Проверка готовности: http://localhost:8000/api/health — `"status": "ok"`, `"index_loaded": true`, `"llm": "available"`. Документация API в браузере — http://localhost:8000/docs.
+
+Вопрос из консоли:
+
+```bash
+curl -s localhost:8000/api/chat -H 'Content-Type: application/json' -d '{"message": "Что такое дополнительный код?"}'
+```
+
+Модель и адреса меняются переменными окружения: `OLLAMA_MODEL`, `OLLAMA_URL`, `OLLAMA_TIMEOUT`, `CORS_ORIGINS` — см. [backend/README.md](backend/README.md).
+
+## Повтор проверки (benchmark)
+
+```bash
+python -m benchmark.run                                        # только поиск: Recall@5, MRR@5 — секунды
+python -m benchmark.run --mode full --api http://localhost:8000    # с ответами LLM: все 4 метрики, ~2 мин
+python -m pytest                                               # тесты поиска, benchmark и API
+```
+
+Тот же прогон через API — так benchmark запускается на защите:
+
+```bash
+curl -s -X POST localhost:8000/api/benchmark/run -H 'Content-Type: application/json' -d '{"k": 5, "mode": "full"}'
+curl -s localhost:8000/api/benchmark/runs/<run_id>             # статус, прогресс, затем метрики
+```
+
+Результаты сохраняются в `benchmark/results/`. Подробности — [benchmark/README.md](benchmark/README.md), [search/README.md](search/README.md), [corpus/README.md](corpus/README.md).
 
 ## Архитектура рабочей версии
 
@@ -87,10 +126,11 @@ flowchart LR
 ├── CONTRIBUTING.md         правила проекта: ветки, Pull Request, review
 ├── CHANGE_HISTORY.md       журнал значимых изменений
 ├── frontend/               статический прототип интерфейса
-├── backend/                будущий FastAPI-сервис (сейчас README с границами)
-├── search/                 будущий BM25-поиск
-├── corpus/                 формат корпуса методичек
-├── benchmark/              формат вопросов и пример
+├── backend/                FastAPI: чат, вызов поиска и LLM, запуск benchmark
+├── search/                 собственный BM25, токенизатор, фрагменты
+├── corpus/                 30 документов: manifest и извлечённый текст
+├── benchmark/              вопросы, прогон и 4 метрики, сохранённые результаты
+├── tests/                  pytest: поиск, benchmark, API
 ├── spec/
 │   ├── product/            продукт, сценарии, интерфейс
 │   ├── tech/               архитектура, API, RAG, проверка
@@ -119,7 +159,7 @@ flowchart LR
 python3 scripts/check_docs.py
 ```
 
-Скрипт проверяет наличие обязательных файлов и что все локальные ссылки в Markdown ведут на существующие файлы. Тот же скрипт запускается в GitHub Actions на каждый Pull Request.
+Скрипт проверяет наличие обязательных файлов и что все локальные ссылки в Markdown ведут на существующие файлы. На каждый push в `main` и Pull Request GitHub Actions запускает этот скрипт, проверку синтаксиса JavaScript, сборку индекса и все тесты `pytest` (без LLM).
 
 ## Команда
 
