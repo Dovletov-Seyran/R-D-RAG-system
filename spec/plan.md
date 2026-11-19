@@ -10,10 +10,10 @@
 | CP1-04. Прототип интерфейса | Frontend | `frontend/` | Показ в браузере | Готово |
 | CP1-05. Оформление репозитория | Backend + все | README, docs, CI, шаблон PR | `check_docs.py`, GitHub | Готово |
 | CP1-06. Защита точки 1 | Все | [Сценарий показа](../docs/demo-script.md) | Каждый объясняет свою часть | К защите |
-| CP2-01. Корпус `D01…D30` (1 курс, 1 семестр) | RAG | `corpus/`, manifest | Текст извлечён, страницы совпадают | В работе |
-| CP2-02. Свой BM25-индекс и токенизатор | RAG | `search/` | `pytest`, нужный документ в top-5 | В работе |
-| CP2-03. Набор вопросов: 10 обычных + 5 ловушек | RAG + все | `benchmark/questions.jsonl` | ≥ 3 релевантных документа на вопрос | В работе |
-| CP2-04. Скрипт benchmark: 4 метрики, запуск в рантайме | RAG | `benchmark/run.py` | `python -m benchmark.run` | В работе |
+| CP2-01. Корпус `D01…D30` (1 курс, 1 семестр) | RAG | `corpus/`, manifest | Текст извлечён, страницы совпадают | Готово |
+| CP2-02. Свой BM25-индекс и токенизатор | RAG | `search/` | `pytest`, нужный документ в top-5 | Готово |
+| CP2-03. Набор вопросов: 10 обычных + 5 ловушек | RAG + все | `benchmark/questions.jsonl` | ≥ 3 релевантных документа на вопрос | Готово |
+| CP2-04. Скрипт benchmark: 4 метрики, запуск в рантайме | RAG | `benchmark/run.py` | `python -m benchmark.run` | Готово (Accuracy — после CP2-05) |
 | CP2-05. Backend `POST /api/chat`, Ollama, отказ | Backend | `backend/` | Тесты API с заглушкой LLM | В работе |
 | CP2-06. Запуск benchmark через API | Backend | `POST /api/benchmark/run` | Тест API, прогон на ноутбуке | После CP2-04 |
 | CP2-07. Подключение frontend к API, источники, отказ | Frontend | `askAssistant()` | Сценарии в браузере | После CP2-05 |

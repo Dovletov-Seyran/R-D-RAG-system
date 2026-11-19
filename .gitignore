@@ -6,3 +6,6 @@ __pycache__/
 .idea/
 .vscode/
 node_modules/
+
+# собранный BM25-индекс: python -m search.build
+search/index/

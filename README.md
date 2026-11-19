@@ -19,8 +19,10 @@
 | Продуктовые и технические спецификации | Подготовлены, см. [spec/](spec/) |
 | Интерфейс | Статический прототип: вход, чат, история диалогов, адаптивная вёрстка — [frontend/](frontend/) |
 | Контракт API чата | Описан в [spec/tech/api.md](spec/tech/api.md); точка подключения в `frontend/script.js` |
-| Backend, BM25-поиск, LLM | Планируются; исходников реализации пока нет |
-| Корпус методичек и benchmark | Описаны формат и методика; реальный корпус и метрики ещё не получены |
+| Корпус | 30 документов `D01…D30` (1 курс, 1 семестр), извлечённый текст — [corpus/](corpus/) |
+| BM25-поиск | Собственный индекс, лемматизация, отказ без контекста — [search/](search/), 24 теста |
+| Benchmark | 10 вопросов + 5 ловушек, запуск в рантайме: Recall@5 = 0.960, MRR@5 = 1.000 — [benchmark/](benchmark/) |
+| Backend, LLM | В работе по [ТЗ точки 2](docs/checkpoint-2.md) |
 
 Ответы в прототипе — демонстрационные: они явно помечены как «демо-ответ» и не являются работой RAG.
 
@@ -39,6 +41,21 @@ python3 -m http.server 8080 --directory frontend
 | Вход | Новый диалог |
 | --- | --- |
 | ![Вход](docs/images/login.png) | ![Новый диалог](docs/images/welcome.png) |
+
+## Поиск и benchmark
+
+Нужен Python 3.12+.
+
+```bash
+python -m venv .venv
+.venv/Scripts/activate            # Windows; на Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
+python -m search.build            # собрать BM25-индекс из corpus/processed (~2 с)
+python -m benchmark.run           # benchmark в рантайме: Recall@5, MRR@5, отказ на ловушках
+python -m pytest                  # тесты поиска и benchmark
+```
+
+С ответами LLM, когда запущен backend: `python -m benchmark.run --mode full --api http://localhost:8000` — добавляются Accuracy и Correct Rejection Rate по ответам. Результаты сохраняются в `benchmark/results/`. Подробности — [benchmark/README.md](benchmark/README.md), [search/README.md](search/README.md), [corpus/README.md](corpus/README.md).
 
 ## Архитектура рабочей версии
 
